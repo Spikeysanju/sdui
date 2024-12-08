@@ -16,18 +16,26 @@ import com.thisux.sdui.ui.theme.SduiTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.remember
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.material3.Switch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -62,6 +70,9 @@ fun RenderUIComponents(components: List<UIComponent>) {
                 is ProductUI -> RenderProduct(component)
                 is TransactionUI -> RenderTransaction(component)
                 is DashboardUI -> RenderDashboard(component)
+                is ChartUI -> RenderChart(component)
+                is ProfileUI -> RenderProfile(component)
+                is SettingsUI -> RenderSettings(component)
 
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -72,83 +83,143 @@ fun RenderUIComponents(components: List<UIComponent>) {
 @Composable
 fun MultipleComponentsScreen() {
     val serverJson = """
-        [
-         
+    [
+      {
+        "_type": "card",
+        "type": "card",
+        "title": "Exclusive Offer",
+        "imageUrl": "https://example.com/image.jpg",
+        "description": "Get 20% off on your first order!",
+        "backgroundColor": "#FFAA00"
+      },
+      {
+        "_type": "banner",
+        "type": "banner",
+        "title": "Welcome!",
+        "description": "Start your journey with us.",
+        "countdown": "2024-12-31T23:59:59Z",
+        "backgroundColor": "#FFAA00"
+      },
+      {
+        "_type": "button",
+        "type": "button",
+        "text": "Learn More",
+        "action": "https://example.com/learn"
+      },
+      {
+        "_type": "product",
+        "type": "product",
+        "title": "Product 1",
+        "imageUrl": "https://example.com/image.jpg",
+        "description": "Product 1 description",
+        "price": "$10.00"
+      },
+      {
+        "_type": "product",
+        "type": "product",
+        "title": "Product 2",
+        "imageUrl": "https://example.com/image.jpg",
+        "description": "Product 2 description",
+        "price": "$20.00"
+      },
+      {
+        "_type": "product",
+        "type": "product",
+        "title": "Product 3",
+        "imageUrl": "https://example.com/image.jpg",
+        "description": "Product 3 description",
+        "price": "$30.00"
+      },
+      {
+        "_type": "transaction",
+        "type": "transaction",
+        "title": "Transaction 1",
+        "amount": "$10.00",
+        "date": "2024-12-31T23:59:59Z"
+      },
+      {
+        "_type": "dashboard",
+        "type": "dashboard",
+        "balance": "$100.00",
+        "transactions": [
           {
-            "_type": "card",
-            "type": "card",
-            "title": "Exclusive Offer",
-            "imageUrl": "https://example.com/image.jpg",
-            "description": "Get 20% off on your first order!",
-            "backgroundColor": "#FFAA00"
-          },
-           {
-              "_type": "banner",
-            "type": "banner",
-            "title": "Welcome!",
-            "description": "Start your journey with us.",
-            "countdown": "2024-12-31T23:59:59Z",
-            "backgroundColor": "#FFAA00"
-          },
-          {
-            "_type": "button",
-            "type": "button",
-            "text": "Learn More",
-            "action": "https://example.com/learn"
-          },
-            {
-                "_type": "product",
-                "type": "product",
-                "title": "Product 1",
-                "imageUrl": "https://example.com/image.jpg",
-                "description": "Product 1 description",
-                "price": "$10.00"
-            },
-            {
-                "_type": "product",
-                "type": "product",
-                "title": "Product 2",
-                "imageUrl": "https://example.com/image.jpg",
-                "description": "Product 2 description",
-                "price": "$20.00"
-            },
-            {
-                "_type": "product",
-                "type": "product",
-                "title": "Product 3",
-                "imageUrl": "https://example.com/image.jpg",
-                "description": "Product 3 description",
-                "price": "$30.00"
-            },{
             "_type": "transaction",
             "type": "transaction",
             "title": "Transaction 1",
             "amount": "$10.00",
-            "date": "2024-12-31T23:59:59Z"},
-            {
-            "_type": "dashboard",
-            "type": "dashboard",
-            "balance": "$100.00",
-            "transactions": [
-                {
-                    "_type": "transaction",
-                    "type": "transaction",
-                    "title": "Transaction 1",
-                    "amount": "$10.00",
-                    "date": "2024-12-31T23:59:59Z"
-                },
-                {
-                    "_type": "transaction",
-                    "type": "transaction",
-                    "title": "Transaction 2",
-                    "amount": "$20.00",
-                    "date": "2024-12-31T23:59:59Z"
-                }
+            "date": "2024-12-31T23:59:59Z"
+          },
+          {
+            "_type": "transaction",
+            "type": "transaction",
+            "title": "Transaction 2",
+            "amount": "$20.00",
+            "date": "2024-12-31T23:59:59Z"
+          }
+        ]
+      },
+      {
+        "_type": "chart",
+        "type": "chart",
+        "title": "Sales Chart",
+        "data": [150, 200, 250, 300],
+        "labels": ["January", "February", "March", "April"]
+      },
+      {
+        "_type": "profile",
+        "type": "profile",
+        "name": "John Doe",
+        "avatar": "https://example.com/avatar.jpg",
+        "bio": "Developer and Designer",
+        "stats": {
+          "posts": 120,
+          "followers": 300,
+          "following": 150
+        }
+      },
+      {
+        "_type": "settings",
+        "type": "settings",
+        "sections": [
+          {
+            "title": "General",
+            "items": [
+              {
+                "title": "Notifications",
+                "subtitle": "Turn on/off notifications",
+                "type": "toggle",
+                "value": "true"
+              },
+              {
+                "title": "Language",
+                "subtitle": "Choose language",
+                "type": "input",
+                "value": "English"
+              }
             ]
-            }
+          },
+          {
+            "title": "Privacy",
+            "items": [
+              {
+                "title": "Location",
+                "subtitle": "Enable location sharing",
+                "type": "toggle",
+                "value": "false"
+              },
+              {
+                "title": "Two-factor Authentication",
+                "subtitle": "Enable 2FA for added security",
+                "type": "toggle",
+                "value": "true"
+              }
             ]
-            
-    """.trimIndent()
+          }
+        ]
+      }
+    ]
+""".trimIndent()
+
 
     val components = JsonParser.jsonParser.decodeFromString<List<UIComponent>>(serverJson)
     if (components != null) {
@@ -427,6 +498,158 @@ fun RenderDashboard(dashboard: DashboardUI) {
             dashboard.transactions.forEach { transaction ->
                 RenderTransaction(transaction)
                 Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun RenderChart(chart: ChartUI) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = chart.title,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                chart.data.forEachIndexed { index, value ->
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(value.toFloat() / 100)
+                            .background(
+                                Color(0xFF2196F3),
+                                RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                            )
+                    )
+                    if (index < chart.data.size - 1) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RenderProfile(profile: ProfileUI) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Avatar placeholder
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(Color.Gray, CircleShape)
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = profile.name,
+                style = MaterialTheme.typography.titleLarge
+            )
+            
+            Text(
+                text = profile.bio,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                profile.stats.forEach { (label, value) ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = value.toString(),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RenderSettings(settings: SettingsUI) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            settings.sections.forEach { section ->
+                Text(
+                    text = section.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                
+                section.items.forEach { item ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = item.title,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            item.subtitle?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+                        when (item.type) {
+                            "toggle" -> Switch(
+                                checked = item.value == "true",
+                                onCheckedChange = {}
+                            )
+                        }
+                    }
+                }
+                if (section != settings.sections.last()) {
+                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+                }
             }
         }
     }

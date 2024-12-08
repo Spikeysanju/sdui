@@ -2,11 +2,10 @@ package com.thisux.sdui
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
+
 
 @Serializable
 sealed interface UIComponent {
@@ -40,7 +39,6 @@ data class ButtonUI(
     val action: String
 ) : UIComponent
 
-// now products grid
 @Serializable
 @SerialName("product")
 data class ProductUI(
@@ -60,7 +58,6 @@ data class TransactionUI(
     val date: String
 ): UIComponent
 
-// dashbaord balance and transactions
 @Serializable()
 @SerialName("dashboard")
 data class DashboardUI(
@@ -69,8 +66,45 @@ data class DashboardUI(
     val transactions: List<TransactionUI>
 ) : UIComponent
 
+@Serializable
+@SerialName("chart")
+data class ChartUI(
+    override val type: String,
+    val title: String,
+    val data: List<Double>,
+    val labels: List<String>
+) : UIComponent
 
+@Serializable
+@SerialName("profile")
+data class ProfileUI(
+    override val type: String,
+    val name: String,
+    val avatar: String,
+    val bio: String,
+    val stats: Map<String, Int>
+) : UIComponent
 
+@Serializable
+@SerialName("settings")
+data class SettingsUI(
+    override val type: String,
+    val sections: List<SettingsSection>
+) : UIComponent
+
+@Serializable
+data class SettingsSection(
+    val title: String,
+    val items: List<SettingsItem>
+)
+
+@Serializable
+data class SettingsItem(
+    val title: String,
+    val subtitle: String? = null,
+    val type: String, // "toggle", "action", "input"
+    val value: String? = null
+)
 
 object JsonParser {
     private val module = SerializersModule {
@@ -81,6 +115,9 @@ object JsonParser {
             subclass(ProductUI::class, ProductUI.serializer())
             subclass(DashboardUI::class, DashboardUI.serializer())
             subclass(TransactionUI::class, TransactionUI.serializer())
+            subclass(ChartUI::class, ChartUI.serializer())
+            subclass(ProfileUI::class, ProfileUI.serializer())
+            subclass(SettingsUI::class, SettingsUI.serializer())
         }
     }
 
